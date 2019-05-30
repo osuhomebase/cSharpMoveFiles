@@ -42,14 +42,14 @@ namespace MoveFiles
                     {
                         string sourceFile = sourcePath + Path.GetFileName(f);
                         string destinationFile = destinationPath + i.ToString() + @"\" + j.ToString() + @"\" + Path.GetFileName(f);
-                        if (!File.Exists(destinationFile))
+                        if (!File.Exists(destinationFile) && File.Exists(sourceFile))
                         {
                             File.Move(sourceFile, destinationFile);
                         }
                         counter++;
                         Console.WriteLine(f);
                         Console.WriteLine(counter.ToString() + @"/" + total + " complete");
-                        decimal percent = counter / total;
+                        decimal percent = (decimal)counter / (decimal)total;
                         Console.WriteLine(percent.ToString() + "%");
                     }
                 }
