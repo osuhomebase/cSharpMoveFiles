@@ -13,6 +13,13 @@ namespace MoveFiles
             string sourcePath = @"C:\SourceCode\MoveFiles\SampleSource\";
             string destinationPath = @"C:\SourceCode\MoveFiles\SampleDestination\";
 
+            using (StreamReader r = new StreamReader("config.json"))
+            {
+                string json = r.ReadToEnd();
+
+
+            }
+
 
             for(int i = 0; i < 10; i++)
             {
@@ -34,6 +41,11 @@ namespace MoveFiles
                 }
             }
             var x = Console.ReadKey();
+        }
+        private class configVals
+        {
+            public string sourcePath { get; set; }
+            public string destinationPath { get; set; }
         }
     }
 }
