@@ -23,13 +23,17 @@ namespace MoveFiles
                 Console.WriteLine(vals.destinationPath);
             }
 
+            int total = Directory.GetFiles(sourcePath,"*.jpg").Length;
+            int counter = 0;
 
-            for(int i = 0; i < 10; i++)
+
+            for (int i = 0; i < 10; i++)
             {
                 Regex reg = new Regex(@"\S*" + i.ToString() + ".jpg$");
                 var files = Directory.GetFiles(sourcePath, "*.jpg")
                      .Where(path => reg.IsMatch(path))
                      .ToList();
+
                 for(int j=0; j<=10; j++)
                 {
                     IEnumerable<string> subFiles = files.Where(f => f.EndsWith(j.ToString() + i.ToString() + ".jpg"));
@@ -38,8 +42,15 @@ namespace MoveFiles
                     {
                         string sourceFile = sourcePath + Path.GetFileName(f);
                         string destinationFile = destinationPath + i.ToString() + @"\" + j.ToString() + @"\" + Path.GetFileName(f);
-                        File.Move(sourceFile, destinationFile);
+                        if (!File.Exists(destinationFile))
+                        {
+                            File.Move(sourceFile, destinationFile);
+                        }
+                        counter++;
                         Console.WriteLine(f);
+                        Console.WriteLine(counter.ToString() + @"/" + total + " complete");
+                        decimal percent = counter / total;
+                        Console.WriteLine(percent.ToString() + "%");
                     }
                 }
             }
