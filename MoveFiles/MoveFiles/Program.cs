@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace MoveFiles
 {
@@ -16,8 +17,10 @@ namespace MoveFiles
             using (StreamReader r = new StreamReader("config.json"))
             {
                 string json = r.ReadToEnd();
-
-
+                configVals vals = JsonConvert.DeserializeObject<configVals>(json);
+                sourcePath = vals.sourcePath;
+                destinationPath = vals.destinationPath;
+                Console.WriteLine(vals.destinationPath);
             }
 
 
@@ -34,7 +37,7 @@ namespace MoveFiles
                     foreach (string f in subFiles)
                     {
                         string sourceFile = sourcePath + Path.GetFileName(f);
-                        string destinationFile = destinationPath + i.ToString() + @"\" + Path.GetFileName(f);
+                        string destinationFile = destinationPath + i.ToString() + @"\" + j.ToString() + @"\" + Path.GetFileName(f);
                         File.Move(sourceFile, destinationFile);
                         Console.WriteLine(f);
                     }
