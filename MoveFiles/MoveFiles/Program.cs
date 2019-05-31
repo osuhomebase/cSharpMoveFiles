@@ -45,10 +45,24 @@ namespace MoveFiles
                         if (!File.Exists(destinationFile))
                         {
                             if (File.Exists(sourceFile))
-                                File.Move(sourceFile, destinationFile);
+                                try
+                                {
+                                    File.Move(sourceFile, destinationFile);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(ex);
+                                }
                         }
                         else if (File.Exists(sourceFile))
-                            File.Delete(sourceFile);
+                            try
+                            {
+                                File.Delete(sourceFile);
+                            }
+                            catch(Exception ex)
+                            {
+                                Console.WriteLine(ex);
+                            }
                         counter++;
                         Console.WriteLine(f);
                         Console.WriteLine(counter.ToString() + @"/" + total + " complete");
