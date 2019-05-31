@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MoveFiles
 {
@@ -13,6 +15,7 @@ namespace MoveFiles
         {
             string sourcePath = @"C:\SourceCode\MoveFiles\SampleSource\";
             string destinationPath = @"C:\SourceCode\MoveFiles\SampleDestination\";
+            ParallelOptions options = new ParallelOptions { MaxDegreeOfParallelism = 4 };
 
             using (StreamReader r = new StreamReader("config.json"))
             {
@@ -37,9 +40,7 @@ namespace MoveFiles
                 for(int j=0; j<=10; j++)
                 {
                     IEnumerable<string> subFiles = files.Where(f => f.EndsWith(j.ToString() + i.ToString() + ".jpg"));
-
-                    foreach (string f in subFiles)
-                    {
+                    Parallel.ForEach(files, options, f => {
                         string sourceFile = sourcePath + Path.GetFileName(f);
                         string destinationFile = destinationPath + i.ToString() + @"\" + j.ToString() + @"\" + Path.GetFileName(f);
                         if (!File.Exists(destinationFile))
@@ -59,16 +60,16 @@ namespace MoveFiles
                             {
                                 File.Delete(sourceFile);
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
                                 Console.WriteLine(ex);
                             }
-                        counter++;
-                        Console.WriteLine(f);
-                        Console.WriteLine(counter.ToString() + @"/" + total + " complete");
-                        decimal percent = (decimal)counter / (decimal)total;
-                        Console.WriteLine(percent.ToString() + "%");
-                    }
+                        Console.WriteLine($"Processing {f} on thread {Thread.CurrentThread.ManagedThreadId}");
+                        //close lambda expression and method invocation
+                       
+
+                    });
+
                 }
             }
             var x = Console.ReadKey();
