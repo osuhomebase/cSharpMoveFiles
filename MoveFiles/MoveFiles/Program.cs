@@ -42,10 +42,13 @@ namespace MoveFiles
                     {
                         string sourceFile = sourcePath + Path.GetFileName(f);
                         string destinationFile = destinationPath + i.ToString() + @"\" + j.ToString() + @"\" + Path.GetFileName(f);
-                        if (!File.Exists(destinationFile) && File.Exists(sourceFile))
+                        if (!File.Exists(destinationFile))
                         {
-                            File.Move(sourceFile, destinationFile);
+                            if (File.Exists(sourceFile))
+                                File.Move(sourceFile, destinationFile);
                         }
+                        else if (File.Exists(sourceFile))
+                            File.Delete(sourceFile);
                         counter++;
                         Console.WriteLine(f);
                         Console.WriteLine(counter.ToString() + @"/" + total + " complete");
