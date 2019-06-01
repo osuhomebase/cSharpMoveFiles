@@ -6,6 +6,10 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using SharpCompress.Archives;
+using SharpCompress.Common;
+using SharpCompress.Readers;
+using SharpCompress.Readers.Tar;
 
 namespace MoveFiles
 {
@@ -70,6 +74,41 @@ namespace MoveFiles
 
                     });
 
+                }
+            }
+
+            using (var stream = File.OpenRead(@"T:\Photos\Import\Imported\housingphotos.full.20190525.tgz"))
+            using (var archive = ArchiveFactory.Open(stream))
+            {
+                var entry = archive.Entries.First();
+                entry.WriteToFile(Path.Combine(@"T:\Photos\Import\Imported\", entry.Key));
+            }
+            using (var stream = File.OpenRead(@"T:\Photos\Import\Imported\housingphotos.full.tar"))
+            using (var reader = TarReader.Open(stream))
+            {
+                int i = 0;
+                while (reader.MoveToNextEntry() && i < 10)
+                {
+                    if (!reader.Entry.IsDirectory)
+                    {
+                        using (var entryStream = reader.OpenEntryStream())
+                        {
+                            string file = Path.GetFileName(reader.Entry.Key);
+                            string folder = Path.GetDirectoryName(reader.Entry.Key);
+                            string destdir = @"T:\Photos\Import\Imported\";
+                            if (!Directory.Exists(destdir))
+                            {
+                                Directory.CreateDirectory(destdir);
+                            }
+                            string destinationFileName = Path.Combine(destdir, file);
+
+                            using (FileStream fs = File.OpenWrite(destinationFileName))
+                            {
+                                entryStream.CopyTo(fs);
+                            }
+                        }
+                    }
+                    i++;
                 }
             }
             var x = Console.ReadKey();
