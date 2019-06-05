@@ -30,7 +30,7 @@ namespace MoveFilesTests
         {
             using (var file = File.OpenRead(testArchive))
             {
-                using (var protectedStream = new NonDisposingStream(new ForwardOnlyStream(file), throwOnDispose: true))
+                using (NonDisposingStream protectedStream = new NonDisposingStream(new ForwardOnlyStream(file), throwOnDispose: true))
                 {
                     using (var testStream = new TestStream(protectedStream))
                     {
