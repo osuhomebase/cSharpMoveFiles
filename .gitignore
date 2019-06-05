@@ -12,9 +12,6 @@
 # Ignore Config.Json
 config.json
 
-# Ignore all the sample images
-*.jpg
-
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
