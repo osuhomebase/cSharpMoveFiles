@@ -1,8 +1,6 @@
 using System;
 using Xunit;
 using MoveFiles;
-using System.Diagnostics;
-using Microsoft.VisualStudio;
 
 
 
@@ -13,14 +11,23 @@ namespace MoveFilesTests
         [Fact]
         public void ExtractBasics()
         {
-
             // test that invalid directories return exception
-            _ = Assert.Throws<ArgumentException>(testCode: () => { Extract TestExtract = new Extract("foo", "bar"); });
-            _ = Assert.Throws<ArgumentException>(testCode: () => { Extract TestExtract = new Extract(); TestExtract.destinationDirectory = "foo"; });
-            _ = Assert.Throws<ArgumentException>(testCode: () => { Extract TestExtract = new Extract(); TestExtract.sourceDirectory = "bar"; });
+            _ = Assert.Throws<ArgumentException>(testCode: () => { Extract FailExtract = new Extract("foo", "bar"); });
+            _ = Assert.Throws<ArgumentException>(testCode: () => {
+                Extract FailExtract = new Extract
+                {
+                    destinationDirectory = "foo"
+                };
+            });
+            _ = Assert.Throws<ArgumentException>(testCode: () => {
+                Extract FailExtract = new Extract
+                {
+                    sourceDirectory = "bar"
+                };
+            });
 
             // test that valid directories are OK
-
+            Extract TestExtract = new Extract(TEST_ARCHIVES_PATH,SCRATCH_FILES_PATH);
         }
     }
 }

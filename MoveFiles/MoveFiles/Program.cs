@@ -27,7 +27,6 @@ namespace MoveFiles
             }
 
             int total = Directory.GetFiles(sourcePath,"*.jpg").Length;
-            int counter = 0;
 
 
             for (int i = 0; i < 10; i++)
