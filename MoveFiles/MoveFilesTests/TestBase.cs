@@ -35,7 +35,6 @@ namespace MoveFilesTests
             Directory.CreateDirectory(SCRATCH_FILES_PATH);
             Directory.CreateDirectory(SCRATCH2_FILES_PATH);
 
-            Debug.WriteLine("hey man");
             Debug.WriteLine(SCRATCH_FILES_PATH);
             Debug.WriteLine(SCRATCH2_FILES_PATH);
         }

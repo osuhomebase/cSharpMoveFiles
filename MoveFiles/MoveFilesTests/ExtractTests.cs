@@ -1,6 +1,10 @@
 using System;
 using Xunit;
 using MoveFiles;
+using System.Diagnostics;
+using Microsoft.VisualStudio;
+
+
 
 namespace MoveFilesTests
 {
@@ -9,6 +13,7 @@ namespace MoveFilesTests
         [Fact]
         public void ExtractBasics()
         {
+
             // test that invalid directories return exception
             _ = Assert.Throws<ArgumentException>(testCode: () => { Extract TestExtract = new Extract("foo", "bar"); });
             _ = Assert.Throws<ArgumentException>(testCode: () => { Extract TestExtract = new Extract(); TestExtract.destinationDirectory = "foo"; });
