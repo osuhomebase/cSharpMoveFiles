@@ -5,6 +5,7 @@ using SharpCompress.Readers;
 using SharpCompress.Readers.Tar;
 using MoveFilesTests.Mocks;
 using Xunit;
+using System.Diagnostics;
 
 namespace MoveFilesTests
 {
@@ -50,62 +51,7 @@ namespace MoveFilesTests
             }
         }
 
-        [Fact]
-        public void Tar_BZip2_Reader()
-        {
-            Read("Tar.tar.bz2", CompressionType.BZip2);
-        }
-
-        [Fact]
-        public void Tar_GZip_Reader()
-        {
-            Read("Tar.tar.gz", CompressionType.GZip);
-        }
-
-        [Fact]
-        public void Tar_LZip_Reader()
-        {
-            Read("Tar.tar.lz", CompressionType.LZip);
-        }
-
-        [Fact]
-        public void Tar_Xz_Reader()
-        {
-            Read("Tar.tar.xz", CompressionType.Xz);
-        }
-
-        [Fact]
-        public void Tar_BZip2_Entry_Stream()
-        {
-            using (Stream stream = File.OpenRead(Path.Combine(TEST_ARCHIVES_PATH, "Tar.tar.bz2")))
-            using (var reader = TarReader.Open(stream))
-            {
-                while (reader.MoveToNextEntry())
-                {
-                    if (!reader.Entry.IsDirectory)
-                    {
-                        Assert.Equal(CompressionType.BZip2, reader.Entry.CompressionType);
-                        using (var entryStream = reader.OpenEntryStream())
-                        {
-                            string file = Path.GetFileName(reader.Entry.Key);
-                            string folder = Path.GetDirectoryName(reader.Entry.Key);
-                            string destdir = Path.Combine(SCRATCH_FILES_PATH, folder);
-                            if (!Directory.Exists(destdir))
-                            {
-                                Directory.CreateDirectory(destdir);
-                            }
-                            string destinationFileName = Path.Combine(destdir, file);
-
-                            using (FileStream fs = File.OpenWrite(destinationFileName))
-                            {
-                                entryStream.CopyTo(fs);
-                            }
-                        }
-                    }
-                }
-            }
-            VerifyFiles();
-        }
+        
 
         [Fact]
         public void Tar_LongNamesWithLongNameExtension()
@@ -130,67 +76,5 @@ namespace MoveFilesTests
             Assert.Contains("wp-content/plugins/gravityformsextend/lib/Aws/Symfony/Component/ClassLoader/Tests/Fixtures/Apc/beta/Apc/ApcPrefixCollision/A/B/Foo.php", filePaths);
         }
 
-        [Fact]
-        public void Tar_BZip2_Skip_Entry_Stream()
-        {
-            using (Stream stream = File.OpenRead(Path.Combine(TEST_ARCHIVES_PATH, "Tar.tar.bz2")))
-            using (var reader = TarReader.Open(stream))
-            {
-                List<string> names = new List<string>();
-                while (reader.MoveToNextEntry())
-                {
-                    if (!reader.Entry.IsDirectory)
-                    {
-                        Assert.Equal(CompressionType.BZip2, reader.Entry.CompressionType);
-                        using (var entryStream = reader.OpenEntryStream())
-                        {
-                            entryStream.SkipEntry();
-                            names.Add(reader.Entry.Key);
-                        }
-                    }
-                }
-                Assert.Equal(3, names.Count);
-            }
-        }
-
-        [Fact]
-        public void Tar_Containing_Rar_Reader()
-        {
-            string archiveFullPath = Path.Combine(TEST_ARCHIVES_PATH, "Tar.ContainsRar.tar");
-            using (Stream stream = File.OpenRead(archiveFullPath))
-            using (IReader reader = ReaderFactory.Open(stream))
-            {
-                Assert.True(reader.ArchiveType == ArchiveType.Tar);
-            }
-        }
-
-        [Fact]
-        public void Tar_With_TarGz_With_Flushed_EntryStream()
-        {
-            string archiveFullPath = Path.Combine(TEST_ARCHIVES_PATH, "Tar.ContainsTarGz.tar");
-            using (Stream stream = File.OpenRead(archiveFullPath))
-            using (IReader reader = ReaderFactory.Open(stream))
-            {
-                Assert.True(reader.MoveToNextEntry());
-                Assert.Equal("inner.tar.gz", reader.Entry.Key);
-
-                using (var entryStream = reader.OpenEntryStream())
-                {
-
-                    using (FlushOnDisposeStream flushingStream = new FlushOnDisposeStream(entryStream))
-                    {
-
-                        // Extract inner.tar.gz
-                        using (var innerReader = ReaderFactory.Open(flushingStream))
-                        {
-
-                            Assert.True(innerReader.MoveToNextEntry());
-                            Assert.Equal("test", innerReader.Entry.Key);
-
-                        }
-                    }
-                }
-            }
-        }
     }
 }
