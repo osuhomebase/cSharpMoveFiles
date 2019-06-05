@@ -56,27 +56,13 @@ namespace MoveFilesTests
             }
         }
 
-        /// <summary>
-        /// Verifies the files also check modified time and attributes.
-        /// </summary>
-        public void VerifyFilesEx()
-        {
-            if (UseExtensionInsteadOfNameToVerify)
-            {
-                VerifyFilesByExtensionEx();
-            }
-            else
-            {
-                VerifyFilesByNameEx();
-            }
-        }
 
         protected void VerifyFilesByName()
         {
             var extracted =
                 Directory.EnumerateFiles(SCRATCH_FILES_PATH, "*.*", SearchOption.AllDirectories)
                 .ToLookup(path => path.Substring(SCRATCH_FILES_PATH.Length));
-            var original =
+            ILookup<string, string> original =
                 Directory.EnumerateFiles(ORIGINAL_FILES_PATH, "*.*", SearchOption.AllDirectories)
                 .ToLookup(path => path.Substring(ORIGINAL_FILES_PATH.Length));
 
@@ -85,7 +71,6 @@ namespace MoveFilesTests
             foreach (var orig in original)
             {
                 Assert.True(extracted.Contains(orig.Key));
-
                 CompareFilesByPath(orig.Single(), extracted[orig.Key].Single());
             }
         }
@@ -113,33 +98,12 @@ namespace MoveFilesTests
             }
         }
 
-        /// <summary>
-        /// Verifies the files by extension also check modified time and attributes.
-        /// </summary>
-        protected void VerifyFilesByExtensionEx()
-        {
-            var extracted =
-                Directory.EnumerateFiles(SCRATCH_FILES_PATH, "*.*", SearchOption.AllDirectories)
-                .ToLookup(path => Path.GetExtension(path));
-            var original =
-                Directory.EnumerateFiles(ORIGINAL_FILES_PATH, "*.*", SearchOption.AllDirectories)
-                .ToLookup(path => Path.GetExtension(path));
-
-            Assert.Equal(extracted.Count, original.Count);
-
-            foreach (var orig in original)
-            {
-                Assert.True(extracted.Contains(orig.Key));
-
-                CompareFilesByPath(orig.Single(), extracted[orig.Key].Single());
-                CompareFilesByTimeAndAttribut(orig.Single(), extracted[orig.Key].Single());
-            }
-        }
 
         protected bool UseExtensionInsteadOfNameToVerify { get; set; }
 
         protected void VerifyFilesByExtension()
         {
+            var scratchFile = SCRATCH_FILES_PATH;
             var extracted =
                 Directory.EnumerateFiles(SCRATCH_FILES_PATH, "*.*", SearchOption.AllDirectories)
                 .ToLookup(path => Path.GetExtension(path));
@@ -153,18 +117,12 @@ namespace MoveFilesTests
             {
                 Assert.True(extracted.Contains(orig.Key));
 
-                CompareFilesByPath(orig.Single(), extracted[orig.Key].Single());
+                CompareFilesByPath(orig.First(), extracted[orig.Key].First());
             }
         }
 
         protected void CompareFilesByPath(string file1, string file2)
         {
-            //TODO: fix line ending issues with the text file
-            if (file1.EndsWith("txt"))
-            {
-                return;
-            }
-
             using (var file1Stream = File.OpenRead(file1))
             using (var file2Stream = File.OpenRead(file2))
             {

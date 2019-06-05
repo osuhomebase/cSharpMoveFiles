@@ -66,7 +66,6 @@ namespace MoveFilesTests
         {
             ArchiveStreamRead(readerOptions, testArchives.Select(x => Path.Combine(TEST_ARCHIVES_PATH, x)));
         }
-
         protected void ArchiveStreamRead(ReaderOptions readerOptions, IEnumerable<string> testArchives)
         {
             foreach (var path in testArchives)
@@ -103,7 +102,6 @@ namespace MoveFilesTests
                 VerifyFiles();
             }
         }
-
         protected void ArchiveFileRead(string testArchive, ReaderOptions readerOptions = null)
         {
             testArchive = Path.Combine(TEST_ARCHIVES_PATH, testArchive);
@@ -120,29 +118,6 @@ namespace MoveFilesTests
                 }
             }
             VerifyFiles();
-        }
-
-        /// <summary>
-        /// Demonstrate the ExtractionOptions.PreserveFileTime and ExtractionOptions.PreserveAttributes extract options
-        /// </summary>
-        protected void ArchiveFileReadEx(string testArchive)
-        {
-            testArchive = Path.Combine(TEST_ARCHIVES_PATH, testArchive);
-            using (var archive = ArchiveFactory.Open(testArchive))
-            {
-                foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory))
-                {
-                    entry.WriteToDirectory(SCRATCH_FILES_PATH,
-                        new ExtractionOptions()
-                        {
-                            ExtractFullPath = true,
-                            Overwrite = true,
-                            PreserveAttributes = true,
-                            PreserveFileTime = true
-                        });
-                }
-            }
-            VerifyFilesEx();
         }
     }
 }
