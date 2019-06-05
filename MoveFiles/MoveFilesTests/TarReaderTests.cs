@@ -22,7 +22,7 @@ namespace MoveFilesTests
         [Fact]
         public void Tar_Reader()
         {
-            Read("Tar.tar", CompressionType.None);
+            Read("tar.tar", CompressionType.None);
         }
 
         [Fact]
@@ -70,10 +70,11 @@ namespace MoveFilesTests
                 }
             }
 
-            Assert.Equal(3, filePaths.Count);
-            Assert.Contains("a.txt", filePaths);
-            Assert.Contains("wp-content/plugins/gravityformsextend/lib/Aws/Symfony/Component/ClassLoader/Tests/Fixtures/Apc/beta/Apc/ApcPrefixCollision/A/B/Bar.php", filePaths);
-            Assert.Contains("wp-content/plugins/gravityformsextend/lib/Aws/Symfony/Component/ClassLoader/Tests/Fixtures/Apc/beta/Apc/ApcPrefixCollision/A/B/Foo.php", filePaths);
+            Assert.Equal(30, filePaths.Count);
+            Assert.Contains("N33333333.jpg", filePaths);
+            Assert.Contains("wp-content/plugins/gravityformsextend/lib/Aws/Symfony/Component/ClassLoader/Tests/Fixtures/Apc/beta/Apc/ApcPrefixCollision/A/B/N77777777.jpg", filePaths);
+            Assert.Contains("wp-content/plugins/gravityformsextend/lib/Aws/Symfony/Component/ClassLoader/Tests/Fixtures/Apc/beta/Apc/ApcPrefixCollision/A/B/N88888888.jpg", filePaths);
+            Assert.Contains("wp-content/plugins/gravityformsextend/lib/Aws/Symfony/Component/ClassLoader/Tests/Fixtures/Apc/beta/Apc/ApcPrefixCollision/A/B/N99999999.jpg", filePaths);
         }
 
     }
