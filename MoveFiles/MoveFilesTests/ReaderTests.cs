@@ -2,7 +2,7 @@
 using SharpCompress.Common;
 using SharpCompress.IO;
 using SharpCompress.Readers;
-using MoveFilesTests.Mocks;
+using StreamHelpers;
 using Xunit;
 
 namespace MoveFilesTests

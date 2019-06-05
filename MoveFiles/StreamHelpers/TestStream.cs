@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace MoveFilesTests.Mocks
+namespace StreamHelpers
 {
     /// <summary>
     /// borrowed from https://github.com/adamhathcock/sharpcompress/blob/master/tests/SharpCompress.Test/Mocks/TestStream.cs

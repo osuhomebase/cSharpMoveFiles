@@ -3,7 +3,7 @@ using System.IO;
 using SharpCompress.Common;
 using SharpCompress.Readers;
 using SharpCompress.Readers.Tar;
-using MoveFilesTests.Mocks;
+using StreamHelpers;
 using Xunit;
 using System.Diagnostics;
 

@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Text;
-using SharpCompress.Archives;
 using SharpCompress.Common;
+using SharpCompress.Archives;
 using SharpCompress.Readers;
-using SharpCompress.Readers.Tar;
+using SharpCompress.IO;
+using StreamHelpers;
 
 namespace MoveFiles
 {
@@ -18,15 +13,22 @@ namespace MoveFiles
     {
         private string _sourceDirectory;
         private string _destinationDirectory;
+        private string _sourceFile;
         public string sourceDirectory
         {
             get { return _sourceDirectory; }
-            set {
+            set
+            {
                 DirectoryInfo dir = new DirectoryInfo(Path.GetFullPath(value));
                 if (!dir.Exists)
-                    throw new ArgumentException($"{nameof(value)} must be a valid directory. C'mon man!");              
+                    throw new ArgumentException($"{nameof(value)} must be a valid directory. C'mon man!");
                 _sourceDirectory = value;
             }
+        }
+        public string sourceFile
+        {
+            get { return _sourceFile; }
+            set { _sourceDirectory = value; }
         }
         public string destinationDirectory
         {
@@ -46,14 +48,26 @@ namespace MoveFiles
             destinationDirectory = DestinationDirectory;
         }
 
+        public Extract(string SourceDirectory, string DestinationDirectory, string SourceFile)
+        {
+            sourceDirectory = SourceDirectory;
+            destinationDirectory = DestinationDirectory;
+            sourceFile = SourceFile;
+        }
+
         public Extract()
         {
-            //using (var stream = File.OpenRead(@"T:\Photos\Import\Imported\housingphotos.full.20190525.tgz"))
-            //using (var archive = ArchiveFactory.Open(stream))
-            //{
-            //    var entry = archive.Entries.First();
-            //    entry.WriteToFile(Path.Combine(@"T:\Photos\Import\Imported\", entry.Key));
-            //}
+            
+        }
+
+        private void GetFile()
+        {
+            using (var stream = File.OpenRead(Path.Combine(_sourceDirectory, _sourceFile)))
+            using (var archive = ArchiveFactory.Open(stream))
+            {
+                var entry = archive.Entries.First();
+                entry.WriteToFile(Path.Combine(_destinationDirectory, entry.Key));
+            }
             //using (var stream = File.OpenRead(@"T:\Photos\Import\Imported\housingphotos.full.tar"))
             //using (var reader = TarReader.Open(stream))
             //{
@@ -82,6 +96,21 @@ namespace MoveFiles
             //        i++;
             //    }
             //}
+        }
+
+        public void WriteFiles(IReader reader)
+        {
+            while (reader.MoveToNextEntry())
+            {
+                if (!reader.Entry.IsDirectory)
+                {
+                    reader.WriteEntryToDirectory(_destinationDirectory, new ExtractionOptions()
+                    {
+                        ExtractFullPath = true,
+                        Overwrite = true
+                    });
+                }
+            }
         }
     }
 }
