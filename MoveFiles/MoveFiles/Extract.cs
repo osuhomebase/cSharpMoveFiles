@@ -6,6 +6,7 @@ using SharpCompress.Common;
 using SharpCompress.Archives;
 using SharpCompress.Readers;
 using SharpCompress.IO;
+using SharpCompress.Readers.Tar;
 
 
 namespace MoveFiles
@@ -60,7 +61,37 @@ namespace MoveFiles
         {
             
         }
+        public void ExtractArchivedFiles()
+        {
+            using (var stream = File.OpenRead(@"T:\Photos\Import\Imported\housingphotos.full.tar"))
+            using (var reader = TarReader.Open(stream))
+            {
+                int i = 0;
+                while (reader.MoveToNextEntry() && i < 10)
+                {
+                    if (!reader.Entry.IsDirectory)
+                    {
+                        using (var entryStream = reader.OpenEntryStream())
+                        {
+                            string file = Path.GetFileName(reader.Entry.Key);
+                            string folder = Path.GetDirectoryName(reader.Entry.Key);
+                            string destdir = @"T:\Photos\Import\Imported\";
+                            if (!Directory.Exists(destdir))
+                            {
+                                Directory.CreateDirectory(destdir);
+                            }
+                            string destinationFileName = Path.Combine(destdir, file);
 
+                            using (FileStream fs = File.OpenWrite(destinationFileName))
+                            {
+                                entryStream.CopyTo(fs);
+                            }
+                        }
+                    }
+                    i++;
+                }
+            }
+        }
         public void ExtractAllArchives()
         {
             IEnumerable<string> archives = Directory.GetFiles(_sourceDirectory).ToList<string>();
@@ -80,34 +111,7 @@ namespace MoveFiles
                 }
             }
            
-            //using (var stream = File.OpenRead(@"T:\Photos\Import\Imported\housingphotos.full.tar"))
-            //using (var reader = TarReader.Open(stream))
-            //{
-            //    int i = 0;
-            //    while (reader.MoveToNextEntry() && i < 10)
-            //    {
-            //        if (!reader.Entry.IsDirectory)
-            //        {
-            //            using (var entryStream = reader.OpenEntryStream())
-            //            {
-            //                string file = Path.GetFileName(reader.Entry.Key);
-            //                string folder = Path.GetDirectoryName(reader.Entry.Key);
-            //                string destdir = @"T:\Photos\Import\Imported\";
-            //                if (!Directory.Exists(destdir))
-            //                {
-            //                    Directory.CreateDirectory(destdir);
-            //                }
-            //                string destinationFileName = Path.Combine(destdir, file);
-
-            //                using (FileStream fs = File.OpenWrite(destinationFileName))
-            //                {
-            //                    entryStream.CopyTo(fs);
-            //                }
-            //            }
-            //        }
-            //        i++;
-            //    }
-            //}
+            
         }
 
         public void WriteFiles(IReader reader)
