@@ -65,7 +65,7 @@ namespace MoveFiles
         {
             IEnumerable<string> archives = Directory.GetFiles(_sourceDirectory).ToList<string>();
             // we only care about the tgz files dropped
-            foreach (var path in archives.Where(p => Path.GetExtension(p) == "tgz"))
+            foreach (var path in archives.Where(p => Path.GetExtension(p) == ".tgz"))
             {
                 using (var stream = new NonDisposingStream(File.OpenRead(path), false))
                 using (var archive = ArchiveFactory.Open(stream))
