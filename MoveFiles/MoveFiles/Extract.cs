@@ -73,9 +73,8 @@ namespace MoveFiles
                 {
                     foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory && entry.CompressionType == CompressionType.GZip))
                     {
-                        var options = new ExtractionOptions { PreserveFileTime = false, Overwrite = true };
                         // added unique filename prefix
-                        entry.WriteToFile(Path.Combine(_destinationDirectory, i.ToString() + "_" + entry.Key), options);
+                        entry.WriteToFile(Path.Combine(_destinationDirectory, i.ToString() + "_" + entry.Key));
                         i++;
                     }
                 }
