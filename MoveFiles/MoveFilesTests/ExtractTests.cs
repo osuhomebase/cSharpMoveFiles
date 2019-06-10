@@ -1,6 +1,8 @@
 using System;
 using Xunit;
 using MoveFiles;
+using System.Diagnostics;
+using System.IO;
 
 
 
@@ -29,5 +31,14 @@ namespace MoveFilesTests
             // test that valid directories are OK
             Extract TestExtract = new Extract(TEST_ARCHIVES_PATH,SCRATCH_FILES_PATH);
         }
+
+        [Fact]
+        public void ExtractAllArchives()
+        {
+
+            Extract TestExtract = new Extract(TEST_ARCHIVES_PATH, SCRATCH_FILES_PATH);
+            TestExtract.ExtractAllArchives();
+        }
+
     }
 }

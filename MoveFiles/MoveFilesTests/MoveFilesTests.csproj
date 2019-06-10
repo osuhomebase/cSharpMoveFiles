@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MoveFiles\MoveFiles.csproj" />
+    <ProjectReference Include="..\StreamHelpers\StreamHelpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

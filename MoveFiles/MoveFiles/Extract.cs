@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using SharpCompress.Common;
 using SharpCompress.Archives;
 using SharpCompress.Readers;
 using SharpCompress.IO;
-using StreamHelpers;
+
 
 namespace MoveFiles
 {
@@ -60,14 +61,22 @@ namespace MoveFiles
             
         }
 
-        private void GetFile()
+        public void ExtractAllArchives()
         {
-            using (var stream = File.OpenRead(Path.Combine(_sourceDirectory, _sourceFile)))
-            using (var archive = ArchiveFactory.Open(stream))
+            IEnumerable<string> archives = Directory.GetFiles(_sourceDirectory).ToList<string>();
+            // we only care about the tgz files dropped
+            foreach (var path in archives.Where(p => Path.GetExtension(p) == "tgz"))
             {
-                var entry = archive.Entries.First();
-                entry.WriteToFile(Path.Combine(_destinationDirectory, entry.Key));
+                using (var stream = new NonDisposingStream(File.OpenRead(path), false))
+                using (var archive = ArchiveFactory.Open(stream))
+                {
+                    foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory && entry.CompressionType == CompressionType.GZip))
+                    {
+                        entry.WriteToFile(Path.Combine(_destinationDirectory, entry.Key));
+                    }
+                }
             }
+           
             //using (var stream = File.OpenRead(@"T:\Photos\Import\Imported\housingphotos.full.tar"))
             //using (var reader = TarReader.Open(stream))
             //{
