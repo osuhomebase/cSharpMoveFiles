@@ -13,8 +13,8 @@ namespace MoveFiles
     {
         static void Main(string[] args)
         {
-            string sourcePath = @"C:\SourceCode\MoveFiles\SampleSource\";
-            string destinationPath = @"C:\SourceCode\MoveFiles\SampleDestination\";
+            string sourcePath = @"";
+            string destinationPath = @"";
             ParallelOptions options = new ParallelOptions { MaxDegreeOfParallelism = 4 };
 
             using (StreamReader r = new StreamReader("config.json"))
@@ -26,9 +26,11 @@ namespace MoveFiles
                 Console.WriteLine(vals.destinationPath);
             }
 
+
+            Extract Archived = new Extract(sourcePath, destinationPath);
+            Archived.ExtractAllArchives();
+
             int total = Directory.GetFiles(sourcePath,"*.jpg").Length;
-
-
             for (int i = 0; i < 10; i++)
             {
                 Regex reg = new Regex(@"\S*" + i.ToString() + ".jpg$");
