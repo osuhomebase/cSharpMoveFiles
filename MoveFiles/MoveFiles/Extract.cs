@@ -65,6 +65,7 @@ namespace MoveFiles
         {
             IEnumerable<string> archives = Directory.GetFiles(_sourceDirectory).ToList<string>();
             // we only care about the tgz files dropped
+            int i = 0;
             foreach (var path in archives.Where(p => Path.GetExtension(p) == ".tgz"))
             {
                 using (var stream = new NonDisposingStream(File.OpenRead(path), false))
@@ -72,7 +73,10 @@ namespace MoveFiles
                 {
                     foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory && entry.CompressionType == CompressionType.GZip))
                     {
-                        entry.WriteToFile(Path.Combine(_destinationDirectory, entry.Key));
+                        var options = new ExtractionOptions { PreserveFileTime = false, Overwrite = true };
+                        // added unique filename prefix
+                        entry.WriteToFile(Path.Combine(_destinationDirectory, i.ToString() + "_" + entry.Key), options);
+                        i++;
                     }
                 }
             }
