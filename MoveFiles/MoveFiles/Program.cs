@@ -79,6 +79,7 @@ namespace MoveFiles
         {
             public string sourcePath { get; set; }
             public string destinationPath { get; set; }
+            public string sourceTgzFile { get; set; }
         }
     }
 }
