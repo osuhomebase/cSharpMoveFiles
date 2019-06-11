@@ -13,9 +13,8 @@ namespace MoveFiles
 {
     public class Extract
     {
-        private string _sourceDirectory;
-        private string _destinationDirectory;
-        private string _sourceFile;
+        protected string _sourceDirectory;
+        protected string _destinationDirectory;
         public string sourceDirectory
         {
             get { return _sourceDirectory; }
@@ -26,11 +25,6 @@ namespace MoveFiles
                     throw new ArgumentException($"{nameof(value)} must be a valid directory. C'mon man!");
                 _sourceDirectory = value;
             }
-        }
-        public string sourceFile
-        {
-            get { return _sourceFile; }
-            set { _sourceDirectory = value; }
         }
         public string destinationDirectory
         {
@@ -54,7 +48,6 @@ namespace MoveFiles
         {
             sourceDirectory = SourceDirectory;
             destinationDirectory = DestinationDirectory;
-            sourceFile = SourceFile;
         }
 
         public Extract()
@@ -63,34 +56,39 @@ namespace MoveFiles
         }
         public void ExtractArchivedFiles()
         {
-            using (var stream = File.OpenRead(@"T:\Photos\Import\Imported\housingphotos.full.tar"))
-            using (var reader = TarReader.Open(stream))
+            IEnumerable<string> archives = Directory.GetFiles(_sourceDirectory).ToList<string>();
+            // we only care about the tgz files dropped
+            foreach (var path in archives.Where(p => Path.GetExtension(p) == ".tar"))
             {
-                int i = 0;
-                while (reader.MoveToNextEntry() && i < 10)
+                using (var stream = File.OpenRead(path))
+                using (var reader = TarReader.Open(stream))
                 {
-                    if (!reader.Entry.IsDirectory)
+                    int i = 0;
+                    while (reader.MoveToNextEntry() && i < 10)
                     {
-                        using (var entryStream = reader.OpenEntryStream())
+                        if (!reader.Entry.IsDirectory)
                         {
-                            string file = Path.GetFileName(reader.Entry.Key);
-                            string folder = Path.GetDirectoryName(reader.Entry.Key);
-                            string destdir = @"T:\Photos\Import\Imported\";
-                            if (!Directory.Exists(destdir))
+                            using (var entryStream = reader.OpenEntryStream())
                             {
-                                Directory.CreateDirectory(destdir);
-                            }
-                            string destinationFileName = Path.Combine(destdir, file);
+                                string file = Path.GetFileName(reader.Entry.Key);
+                                string folder = Path.GetDirectoryName(reader.Entry.Key);
+                                if (!Directory.Exists(_destinationDirectory))
+                                {
+                                    Directory.CreateDirectory(_destinationDirectory);
+                                }
+                                string destinationFileName = Path.Combine(_destinationDirectory, file);
 
-                            using (FileStream fs = File.OpenWrite(destinationFileName))
-                            {
-                                entryStream.CopyTo(fs);
+                                using (FileStream fs = File.OpenWrite(destinationFileName))
+                                {
+                                    entryStream.CopyTo(fs);
+                                }
                             }
                         }
+                        i++;
                     }
-                    i++;
                 }
             }
+            
         }
         public void ExtractAllArchives()
         {
