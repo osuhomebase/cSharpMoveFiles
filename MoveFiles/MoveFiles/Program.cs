@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using System.IO;
-using System.Linq;
-using System.Collections.Generic;
 using Newtonsoft.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MoveFiles
 {
@@ -15,7 +11,6 @@ namespace MoveFiles
         {
             string sourcePath = @"";
             string destinationPath = @"";
-            ParallelOptions options = new ParallelOptions { MaxDegreeOfParallelism = 4 };
 
             using (StreamReader r = new StreamReader("config.json"))
             {
@@ -27,52 +22,10 @@ namespace MoveFiles
             }
 
 
-            Extract Archived = new Extract(sourcePath, destinationPath);
+            MoveExtracted Archived = new MoveExtracted { sourceDirectory = sourcePath, destinationDirectory = destinationPath };
             Archived.ExtractAllArchives();
-
-            int total = Directory.GetFiles(sourcePath,"*.jpg").Length;
-            for (int i = 0; i < 10; i++)
-            {
-                Regex reg = new Regex(@"\S*" + i.ToString() + ".jpg$");
-                var files = Directory.GetFiles(sourcePath, "*.jpg")
-                     .Where(path => reg.IsMatch(path))
-                     .ToList();
-
-                for(int j=0; j<=10; j++)
-                {
-                    IEnumerable<string> subFiles = files.Where(f => f.EndsWith(j.ToString() + i.ToString() + ".jpg"));
-                    Parallel.ForEach(files, options, f => {
-                        string sourceFile = sourcePath + Path.GetFileName(f);
-                        string destinationFile = destinationPath + i.ToString() + @"\" + j.ToString() + @"\" + Path.GetFileName(f);
-                        if (!File.Exists(destinationFile))
-                        {
-                            if (File.Exists(sourceFile))
-                                try
-                                {
-                                    File.Move(sourceFile, destinationFile);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine(ex);
-                                }
-                        }
-                        else if (File.Exists(sourceFile))
-                            try
-                            {
-                                File.Delete(sourceFile);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex);
-                            }
-                        Console.WriteLine($"Processing {f} on thread {Thread.CurrentThread.ManagedThreadId}");
-                        //close lambda expression and method invocation
-                       
-
-                    });
-
-                }
-            }
+            Archived.MoveJpgByName();
+            
 
 
             var x = Console.ReadKey();
