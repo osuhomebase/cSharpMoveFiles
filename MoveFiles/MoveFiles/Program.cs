@@ -24,6 +24,7 @@ namespace MoveFiles
 
             MoveExtracted Archived = new MoveExtracted { sourceDirectory = sourcePath, destinationDirectory = destinationPath };
             Archived.ExtractAllArchives();
+            Archived.ExtractArchivedFiles();
             Archived.MoveJpgByName();
             
 
