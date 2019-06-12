@@ -13,7 +13,7 @@ namespace MoveFiles
 
         public void MoveJpgByName()
         {
-            ParallelOptions options = new ParallelOptions { MaxDegreeOfParallelism = 4 };
+            ParallelOptions options = new ParallelOptions { MaxDegreeOfParallelism = 8 };
             int total = Directory.GetFiles(_sourceDirectory, "*.jpg").Length;
             for (int i = 0; i < 10; i++)
             {
@@ -25,7 +25,7 @@ namespace MoveFiles
                 for (int j = 0; j <= 10; j++)
                 {
                     IEnumerable<string> subFiles = files.Where(f => f.EndsWith(j.ToString() + i.ToString() + ".jpg"));
-                    Parallel.ForEach(files, options, f => {
+                    Parallel.ForEach(subFiles, options, f => {
                         string sourceFile = _sourceDirectory + Path.GetFileName(f);
                         string destinationFile = _destinationDirectory + i.ToString() + @"\" + j.ToString() + @"\" + Path.GetFileName(f);
                         if (!File.Exists(destinationFile))
