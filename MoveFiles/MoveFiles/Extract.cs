@@ -56,6 +56,11 @@ namespace MoveFiles
         }
         public void ExtractArchivedFiles()
         {
+            ExtractArchivedFiles(false);
+        }
+        public void ExtractArchivedFiles(bool removeAfterConsumption)
+        {
+
             IEnumerable<string> archives = Directory.GetFiles(_sourceDirectory).ToList<string>();
             // we only care about the tgz files dropped
             foreach (var path in archives.Where(p => Path.GetExtension(p) == ".tar"))
@@ -64,7 +69,7 @@ namespace MoveFiles
                 using (var reader = TarReader.Open(stream))
                 {
                     int i = 0;
-                    while (reader.MoveToNextEntry() )
+                    while (reader.MoveToNextEntry())
                     {
                         if (!reader.Entry.IsDirectory)
                         {
@@ -87,8 +92,9 @@ namespace MoveFiles
                         i++;
                     }
                 }
+                if (removeAfterConsumption)
+                    File.Delete(path);
             }
-            
         }
         public void ExtractAllArchives()
         {
