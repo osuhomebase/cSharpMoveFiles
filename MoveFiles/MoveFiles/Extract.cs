@@ -64,7 +64,7 @@ namespace MoveFiles
                 using (var reader = TarReader.Open(stream))
                 {
                     int i = 0;
-                    while (reader.MoveToNextEntry() && i < 10)
+                    while (reader.MoveToNextEntry() )
                     {
                         if (!reader.Entry.IsDirectory)
                         {
