@@ -98,6 +98,11 @@ namespace MoveFiles
         }
         public void ExtractAllArchives()
         {
+            ExtractAllArchives(false);
+        }
+        public void ExtractAllArchives(bool removeAfterConsumption)
+        {
+
             IEnumerable<string> archives = Directory.GetFiles(_sourceDirectory).ToList<string>();
             // we only care about the tgz files dropped
             int i = 0;
@@ -113,9 +118,11 @@ namespace MoveFiles
                         i++;
                     }
                 }
+
+                if (removeAfterConsumption)
+                    File.Delete(path);
             }
-           
-            
+
         }
 
         public void WriteFiles(IReader reader)
