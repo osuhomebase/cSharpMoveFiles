@@ -65,6 +65,7 @@ namespace MoveFiles
             // we only care about the tgz files dropped
             foreach (var path in archives.Where(p => Path.GetExtension(p) == ".tar"))
             {
+                using (var files = File.OpenRead(path))
                 using (var stream = File.OpenRead(path))
                 using (var reader = TarReader.Open(stream))
                 {
@@ -91,9 +92,17 @@ namespace MoveFiles
                         }
                         i++;
                     }
+                    files.Close();
                 }
                 if (removeAfterConsumption)
+                {
+                   while(FileIsLocked(path))
+                    {
+                        // wait half a second until the file is done extracting.. some async schtuff going on here somewhere.
+                        System.Threading.Thread.Sleep(500);
+                    }
                     File.Delete(path);
+                }
             }
         }
         public void ExtractAllArchives()
@@ -108,7 +117,8 @@ namespace MoveFiles
             int i = 0;
             foreach (var path in archives.Where(p => Path.GetExtension(p) == ".tgz"))
             {
-                using (var stream = new NonDisposingStream(File.OpenRead(path), false))
+                using (var fs = File.OpenRead(path))
+                using (var stream = new NonDisposingStream(fs, false))
                 using (var archive = ArchiveFactory.Open(stream))
                 {
                     foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory && entry.CompressionType == CompressionType.GZip))
@@ -117,10 +127,21 @@ namespace MoveFiles
                         entry.WriteToFile(Path.Combine(_destinationDirectory, i.ToString() + "_" + entry.Key));
                         i++;
                     }
+                    fs.Close();
                 }
 
                 if (removeAfterConsumption)
+                {
+                    bool locked = FileIsLocked(path);
+                    while (locked)
+                    {
+
+                        // wait half a second until the file is done extracting.. some async schtuff going on here somewhere.
+                        System.Threading.Thread.Sleep(500);
+                        locked = FileIsLocked(path);
+                    }
                     File.Delete(path);
+                }
             }
 
         }
@@ -138,6 +159,22 @@ namespace MoveFiles
                     });
                 }
             }
+        }
+
+        public static bool FileIsLocked(string strFullFileName)
+        {
+            bool blnReturn = false;
+            FileStream fs;
+            try
+            {
+                fs = File.Open(strFullFileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
+                fs.Close();
+            }
+            catch (IOException ex)
+            {
+                blnReturn = true;
+            }
+            return blnReturn;
         }
     }
 }
