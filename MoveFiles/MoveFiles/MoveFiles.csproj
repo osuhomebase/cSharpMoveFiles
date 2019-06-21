@@ -3,7 +3,9 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+    <StartupObject>MoveFiles.Program</StartupObject>
+    <Authors>Mike Baron</Authors>
+    <Company>OSU Homebase</Company>
   </PropertyGroup>
 
   <ItemGroup>

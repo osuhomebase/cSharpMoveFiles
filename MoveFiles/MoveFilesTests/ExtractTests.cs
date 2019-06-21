@@ -4,8 +4,6 @@ using MoveFiles;
 using System.Linq;
 using System.IO;
 
-
-
 namespace MoveFilesTests
 {
     public class ExtractTests : TestBase

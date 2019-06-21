@@ -8,7 +8,6 @@ using SharpCompress.Readers;
 using SharpCompress.IO;
 using SharpCompress.Readers.Tar;
 
-
 namespace MoveFiles
 {
     public class Extract
