@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.28917.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoveFiles", "MoveFiles\MoveFiles.csproj", "{332C174C-41A3-4D16-AED3-B1200A940C89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoveFilesTests", "MoveFilesTests\MoveFilesTests.csproj", "{156632CB-BE71-4CDE-B7F4-BBFD9FED02B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoveFilesTests", "MoveFilesTests\MoveFilesTests.csproj", "{156632CB-BE71-4CDE-B7F4-BBFD9FED02B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamHelpers", "StreamHelpers\StreamHelpers.csproj", "{CCDEC0F1-1A7C-4A65-A650-C02BCBF6C0BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StreamHelpers", "StreamHelpers\StreamHelpers.csproj", "{CCDEC0F1-1A7C-4A65-A650-C02BCBF6C0BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
